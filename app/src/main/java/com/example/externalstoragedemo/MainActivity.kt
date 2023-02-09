@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import com.example.externalstoragedemo.databinding.ActivityMainBinding
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +16,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         showExternalStorageState()
+
+        val dir = getExternalFilesDir(null)
+        binding.tvOutput.append("\n ${dir?.absolutePath}")
+
+        val dirPictures = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        binding.tvOutput.append(("\n${dirPictures?.absolutePath}"))
+
+        val dirDocuments = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        binding.tvOutput.append("\n ${dirDocuments?.absolutePath}")
+
+        val file = File(dirDocuments,"Hallo.txt")
+        FileOutputStream(file).use {
+            it.write("Hallo Welt!".toByteArray())
+        }
+
+        val publicDirDoc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        binding.tvOutput.append("\n\n ${publicDirDoc.absolutePath}")
+        val file2 = File(publicDirDoc,"meinDoc.txt")
+        FileOutputStream(file2).use {
+            it.write("Hallo".toByteArray())
+        }
     }
 
     fun showExternalStorageState(){
